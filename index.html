@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Generator Email & AM Premium - project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg: #03050a;
+      --bg-card: rgba(10, 15, 29, 0.75);
+      --bg-card-border: rgba(0, 240, 255, 0.3);
+      --cyan: #00f0ff;
+      --cyan-glow: rgba(0, 240, 255, 0.4);
+      --purple: #8a2be2;
+      --purple-glow: rgba(138, 43, 226, 0.4);
+      --pink: #ff007f;
+      --pink-glow: rgba(255, 0, 127, 0.4);
+      --green: #00ff9d;
+      --green-glow: rgba(0, 255, 157, 0.4);
+      --red: #ff2a6d;
+      --yellow: #ffd166;
+      --text: #e2f1ff;
+      --text-dim: #7088a8;
+      --radius: 18px;
+      --radius-sm: 10px;
+      --shadow-3d: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(0, 240, 255, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 12px 40px;
+      position: relative;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(circle at 10% 10%, var(--purple-glow) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, var(--cyan-glow) 0%, transparent 40%),
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 99;
+      opacity: 0.6;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 1;
+    }
+
+    header {
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .brand-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .brand-title span {
+      color: var(--pink);
+      text-shadow: 0 0 10px var(--pink);
+    }
+
+    .brand-subtitle {
+      font-size: 13px;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+      margin-top: 5px;
+      text-transform: uppercase;
+    }
+
+    .tab-bar {
+      display: flex;
+      background: rgba(5, 10, 20, 0.8);
+      border: 1px solid var(--bg-card-border);
+      padding: 6px;
+      border-radius: 16px;
+      gap: 8px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,240,255,0.1);
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      padding: 14px 10px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+      background: rgba(0, 240, 255, 0.08);
+    }
+
+    .tab-btn.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(138, 43, 226, 0.3));
+      border: 1px solid var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow);
+      text-shadow: 0 0 8px rgba(255,255,255,0.8);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out forwards;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .cyber-card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-3d);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cyber-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan), var(--pink), transparent);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--cyan);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cyber-input, select.cyber-input {
+      width: 100%;
+      flex: 1;
+      min-width: 200px;
+      background: rgba(0, 5, 15, 0.6);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      color: #fff;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .cyber-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan-glow);
+      background: rgba(0, 10, 25, 0.8);
+    }
+
+    .cyber-btn {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      border: 1px solid var(--cyan);
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(138, 43, 226, 0.4));
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      text-shadow: 0 0 5px var(--cyan);
+      box-shadow: 0 0 10px var(--cyan-glow);
+      white-space: nowrap;
+    }
+
+    .cyber-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.4), rgba(255, 0, 127, 0.5));
+      box-shadow: 0 0 20px var(--cyan-glow);
+      transform: translateY(-2px);
+    }
+
+    .cyber-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .cyber-btn-accent {
+      border-color: var(--pink);
+      background: linear-gradient(135deg, rgba(255, 0, 127, 0.2), rgba(138, 43, 226, 0.4));
+      text-shadow: 0 0 5px var(--pink);
+      box-shadow: 0 0 10px var(--pink-glow);
+    }
+
+    .cyber-btn-accent:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(255, 0, 127, 0.5), rgba(0, 240, 255, 0.4));
+      box-shadow: 0 0 20px var(--pink-glow);
+    }
+
+    .cyber-btn-sm {
+      padding: 8px 14px;
+      font-size: 10px;
+    }
+
+    .cyber-btn-danger {
+      border-color: var(--red);
+      background: linear-gradient(135deg, rgba(255, 42, 109, 0.2), rgba(138, 43, 226, 0.3));
+      text-shadow: 0 0 5px var(--red);
+      box-shadow: 0 0 10px rgba(255, 42, 109, 0.3);
+    }
+
+    .mail-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 820px) {
+      .mail-grid { grid-template-columns: 1fr; }
+    }
+
+    .inbox-list {
+      list-style: none;
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid rgba(0, 240, 255, 0.15);
+      border-radius: var(--radius-sm);
+      background: rgba(0,0,0,0.3);
+    }
+
+    .mail-item {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mail-item:hover, .mail-item.active {
+      background: rgba(0, 240, 255, 0.1);
+      border-left: 3px solid var(--cyan);
+    }
+
+    .mail-viewer {
+      border: 1px solid rgba(0, 240, 255, 0.15);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      background: rgba(0,0,0,0.3);
+      min-height: 250px;
+      word-break: break-word;
+    }
+
+    .history-container {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .history-chip {
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .history-chip:hover {
+      background: var(--cyan);
+      color: #000;
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .alert-box {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-bottom: 14px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    .alert-box.show { display: flex; }
+    .alert-box.success { background: rgba(0, 255, 157, 0.15); border: 1px solid var(--green); color: var(--green); }
+    .alert-box.error { background: rgba(255, 42, 109, 0.15); border: 1px solid var(--red); color: var(--red); }
+
+    .cyber-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 5, 10, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .cyber-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cyber-modal {
+      background: rgba(10, 15, 29, 0.95);
+      border: 1px solid var(--cyan);
+      box-shadow: 0 0 30px var(--cyan-glow), inset 0 0 15px rgba(0, 240, 255, 0.2);
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 420px;
+      padding: 24px;
+      text-align: center;
+      transform: scale(0.8);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+
+    .cyber-modal-overlay.active .cyber-modal {
+      transform: scale(1);
+    }
+
+    .cyber-modal-icon {
+      font-size: 38px;
+      margin-bottom: 12px;
+      color: var(--cyan);
+      text-shadow: 0 0 15px var(--cyan);
+    }
+
+    .cyber-modal-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .cyber-modal-body {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green);
+      text-decoration: none;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      margin-bottom: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--green);
+      border-radius: 20px;
+      background: rgba(0, 255, 157, 0.05);
+      transition: all 0.2s;
+    }
+    .wa-btn:hover { background: rgba(0, 255, 157, 0.2); box-shadow: 0 0 10px var(--green-glow); }
+
+    .loader {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== LOGIN GATE ===== */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: var(--bg);
+      background-image:
+        radial-gradient(circle at 10% 10%, var(--purple-glow) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, var(--cyan-glow) 0%, transparent 40%);
+    }
+    .login-card {
+      width: 100%;
+      max-width: 380px;
+    }
+    .login-card h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px var(--cyan);
+    }
+    .login-hint {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 14px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* ===== STATUS BAR ===== */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 13px;
+    }
+    .status-bar .who { color: #fff; font-weight: 700; }
+    .status-bar .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 0.5px;
+    }
+    .badge-success { background: rgba(0,255,157,0.15); border: 1px solid var(--green); color: var(--green); }
+    .badge-warning { background: rgba(255,209,102,0.15); border: 1px solid var(--yellow); color: var(--yellow); }
+    .badge-danger { background: rgba(255,42,109,0.15); border: 1px solid var(--red); color: var(--red); }
+    .badge-info { background: rgba(0,240,255,0.15); border: 1px solid var(--cyan); color: var(--cyan); }
+
+    /* ===== ADMIN DASHBOARD ===== */
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 820px) {
+      .admin-grid { grid-template-columns: 1fr; }
+    }
+    .admin-section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(0, 240, 255, 0.15);
+      border-radius: var(--radius-sm);
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 560px;
+    }
+    table.data-table th {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      text-align: left;
+      padding: 12px;
+      background: rgba(0, 240, 255, 0.06);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+    }
+    table.data-table td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    table.data-table tr:hover td {
+      background: rgba(0, 240, 255, 0.04);
+    }
+    .dynamic-field { display: none; }
+    .dynamic-field.show { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- ===================== LOGIN GATE ===================== -->
+  <div class="login-overlay" id="loginScreen">
+    <div class="cyber-card login-card">
+      <h2><i class="fa-solid fa-lock" style="color:var(--cyan)"></i> LOGIN AKSES SISTEM</h2>
+      <div id="loginAlert" class="alert-box"></div>
+      <div class="form-group">
+        <label><i class="fa-solid fa-user"></i> USERNAME</label>
+        <input type="text" id="loginUsername" class="cyber-input" placeholder="Masukkan username" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label><i class="fa-solid fa-key"></i> PASSWORD</label>
+        <input type="password" id="loginPassword" class="cyber-input" placeholder="Masukkan password" autocomplete="current-password">
+      </div>
+      <button class="cyber-btn" id="loginBtn" style="width:100%; padding:16px;">
+        <i class="fa-solid fa-right-to-bracket"></i> MASUK
+      </button>
+      <p class="login-hint">Pendaftaran tertutup. Akun hanya dibuat oleh Admin.<br>Belum punya akun? Hubungi Admin untuk membeli akses.</p>
+      <a class="wa-btn" style="width:100%; justify-content:center; margin-top:10px;" href="https://wa.me/6285853204842?text=Halo%20Admin%2C%20saya%20ingin%20membeli%20akun%20akses" target="_blank">
+        <i class="fab fa-whatsapp"></i> Hubungi Admin
+      </a>
+    </div>
+  </div>
+
+  <div class="app-container">
+
+    <!-- HEADER -->
+    <header>
+      <div class="brand-title">
+        <i class="fa-solid fa-bolt" style="color:var(--cyan)"></i> GENERATOR <span>EMAIL & AM</span>
+      </div>
+      <p class="brand-subtitle">GENERATE AM PREMIUM</p>
+    </header>
+
+    <!-- STATUS BAR (shown after login) -->
+    <div class="status-bar" id="statusBar" style="display:none;">
+      <div>
+        <span class="who" id="statusWho">-</span>
+        <span class="badge badge-info" id="statusRole" style="margin-left:8px;">USER</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span class="badge" id="statusBadge">-</span>
+        <button class="cyber-btn cyber-btn-sm cyber-btn-danger" id="logoutBtn"><i class="fa-solid fa-power-off"></i> LOGOUT</button>
+      </div>
+    </div>
+
+    <!-- ===================== USER APP (Email + AM Prem) ===================== -->
+    <div id="userApp" style="display:none;">
+      <nav class="tab-bar">
+        <button class="tab-btn active" data-tab="email-tab">
+          <i class="fa-solid fa-envelope-open-text"></i> GENERATOR EMAIL
+        </button>
+        <button class="tab-btn" data-tab="am-tab">
+          <i class="fa-solid fa-shield-halved"></i> AM PREM
+        </button>
+      </nav>
+
+      <!-- TAB 1: GENERATOR EMAIL (TEMPMAIL) -->
+      <div id="email-tab" class="tab-content active" style="margin-top:16px;">
+        <div class="cyber-card">
+          <div class="form-group">
+            <label><i class="fa-solid fa-satellite"></i> ALAMAT EMAIL SEMENTARA AKTIF</label>
+            <div class="input-row">
+              <input type="text" id="emailDisplay" class="cyber-input" value="MEMBUAT EMAIL..." readonly>
+              <button class="cyber-btn" id="copyEmailBtn"><i class="fa-regular fa-copy"></i> SALIN</button>
+              <button class="cyber-btn cyber-btn-accent" id="newEmailBtn"><i class="fa-solid fa-rotate"></i> BARU</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top:20px;">
+            <label><i class="fa-solid fa-user-pen"></i> MASUKKAN EMAIL MANUAL / LOGIN KEMBALI</label>
+            <div class="input-row">
+              <input type="text" id="manualEmailInput" class="cyber-input" placeholder="Masukkan username/email (Cth: user_test)">
+              <button class="cyber-btn" id="loadManualEmailBtn"><i class="fa-solid fa-right-to-bracket"></i> TAMPILKAN</button>
+            </div>
+            <p style="font-size:11px; color:var(--text-dim); margin-top:6px;">* Masukkan nama pengguna awal (sebelum @) dari email yang pernah kamu gunakan.</p>
+          </div>
+
+          <div class="form-group">
+            <label><i class="fa-solid fa-clock-rotate-left"></i> RIWAYAT EMAIL PERNAH DILOGIN</label>
+            <div class="history-container" id="historyContainer">
+              <span style="font-size:12px; color:var(--text-dim);">Belum ada riwayat email.</span>
+            </div>
+          </div>
+
+          <div class="mail-grid">
+            <div>
+              <label style="font-family:'Orbitron'; font-size:11px; color:var(--cyan);"><i class="fa-solid fa-inbox"></i> INBOX (<span id="mailCount">0</span>)</label>
+              <ul class="inbox-list" id="inboxList">
+                <li class="mail-item" style="text-align:center; color:var(--text-dim); padding:20px;">Menunggu email masuk...</li>
+              </ul>
+            </div>
+            <div>
+              <label style="font-family:'Orbitron'; font-size:11px; color:var(--cyan);"><i class="fa-solid fa-eye"></i> EMAIL VIEWER</label>
+              <div class="mail-viewer" id="mailViewer">
+                <p style="color:var(--text-dim); text-align:center; margin-top:80px;">Pilih pesan di inbox untuk dibaca.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: AM PREM (ALIGHT MOTION PREMIUM) -->
+      <div id="am-tab" class="tab-content" style="margin-top:16px;">
+        <div class="cyber-card">
+          <h3 style="font-family:'Orbitron'; font-size:16px; margin-bottom:12px; color:#fff;">AKTIVASI ALIGHT MOTION PREMIUM</h3>
+          <p style="font-size:13px; color:var(--text-dim); margin-bottom:20px;">Kirim Magic Link ke email Alight Motion kamu lalu verifikasi untuk mengaktifkan lisensi premium.</p>
+
+          <div id="amAlert" class="alert-box"></div>
+
+          <div class="form-group">
+            <label><i class="fa-solid fa-at"></i> EMAIL AKUN ALIGHT MOTION</label>
+            <div class="input-row">
+              <input type="email" id="amEmailInput" class="cyber-input" placeholder="contoh@gmail.com">
+              <button class="cyber-btn" id="amSendBtn">KIRIM</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label><i class="fa-solid fa-link"></i> MAGIC LINK (URL)</label>
+            <input type="url" id="amMagicInput" class="cyber-input" placeholder="Tempel URL Magic Link di sini">
+          </div>
+
+          <button class="cyber-btn cyber-btn-accent" id="amActivateBtn" style="width:100%; margin-top:10px; padding:16px;">
+            <i class="fa-solid fa-bolt"></i> VERIFIKASI & AKTIFKAN
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== ADMIN DASHBOARD ===================== -->
+    <div id="adminApp" style="display:none;">
+      <div class="admin-grid">
+
+        <!-- CREATE ACCOUNT -->
+        <div class="cyber-card">
+          <div class="admin-section-title"><i class="fa-solid fa-user-plus" style="color:var(--cyan)"></i> BUAT AKUN BARU</div>
+          <div id="createAlert" class="alert-box"></div>
+          <div class="form-group">
+            <label>USERNAME</label>
+            <input type="text" id="newUsername" class="cyber-input" placeholder="username_pembeli">
+          </div>
+          <div class="form-group">
+            <label>PASSWORD</label>
+            <input type="text" id="newPassword" class="cyber-input" placeholder="password akun">
+          </div>
+          <div class="form-group">
+            <label>ROLE</label>
+            <select id="newRole" class="cyber-input">
+              <option value="user" selected>User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="form-group" id="newTypeWrap">
+            <label>TIPE AKSES</label>
+            <select id="newType" class="cyber-input">
+              <option value="limit">Limit (Batas Pemakaian Login)</option>
+              <option value="time">Waktu (Berlaku Sampai Tanggal Tertentu)</option>
+              <option value="permanent">Permanen</option>
+            </select>
+          </div>
+          <div class="form-group dynamic-field" id="newLimitWrap">
+            <label>JUMLAH LIMIT</label>
+            <input type="number" id="newLimitValue" class="cyber-input" placeholder="Contoh: 1" min="1">
+          </div>
+          <div class="form-group dynamic-field" id="newTimeWrap">
+            <label>DURASI WAKTU</label>
+            <div class="input-row">
+              <input type="number" id="newTimeValue" class="cyber-input" placeholder="Contoh: 30" min="1" style="min-width:100px;">
+              <select id="newTimeUnit" class="cyber-input" style="min-width:120px;">
+                <option value="minutes">Menit</option>
+                <option value="hours">Jam</option>
+                <option value="days" selected>Hari</option>
+              </select>
+            </div>
+          </div>
+          <button class="cyber-btn" id="createAccountBtn" style="width:100%; margin-top:6px;">
+            <i class="fa-solid fa-floppy-disk"></i> SIMPAN AKUN KE DATABASE
+          </button>
+        </div>
+
+        <!-- UPDATE ACCOUNT -->
+        <div class="cyber-card">
+          <div class="admin-section-title"><i class="fa-solid fa-user-gear" style="color:var(--cyan)"></i> UPDATE AKUN</div>
+          <div id="updateAlert" class="alert-box"></div>
+          <div class="form-group">
+            <label>USERNAME TUJUAN</label>
+            <input type="text" id="updUsername" class="cyber-input" placeholder="username yang ingin diubah">
+          </div>
+          <div class="form-group">
+            <label>AKSI</label>
+            <select id="updAction" class="cyber-input">
+              <option value="add_time">Tambah Waktu</option>
+              <option value="add_limit">Tambah Limit</option>
+              <option value="make_permanent">Ubah Ke Permanen</option>
+            </select>
+          </div>
+          <div class="form-group dynamic-field" id="updLimitWrap">
+            <label>TAMBAH JUMLAH LIMIT</label>
+            <input type="number" id="updLimitValue" class="cyber-input" placeholder="Contoh: 1" min="1">
+          </div>
+          <div class="form-group dynamic-field" id="updTimeWrap">
+            <label>TAMBAH DURASI WAKTU</label>
+            <div class="input-row">
+              <input type="number" id="updTimeValue" class="cyber-input" placeholder="Contoh: 7" min="1" style="min-width:100px;">
+              <select id="updTimeUnit" class="cyber-input" style="min-width:120px;">
+                <option value="minutes">Menit</option>
+                <option value="hours">Jam</option>
+                <option value="days" selected>Hari</option>
+              </select>
+            </div>
+          </div>
+          <button class="cyber-btn cyber-btn-accent" id="updateAccountBtn" style="width:100%; margin-top:6px;">
+            <i class="fa-solid fa-rotate"></i> TERAPKAN PERUBAHAN
+          </button>
+        </div>
+      </div>
+
+      <!-- ALL USERS TABLE -->
+      <div class="cyber-card" style="margin-top:16px;">
+        <div class="admin-section-title" style="justify-content:space-between;">
+          <span><i class="fa-solid fa-users" style="color:var(--cyan)"></i> SEMUA USER</span>
+          <button class="cyber-btn cyber-btn-sm" id="refreshUsersBtn"><i class="fa-solid fa-rotate"></i> REFRESH</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Role</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr><td colspan="4" style="text-align:center; color:var(--text-dim);">Memuat data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <a class="wa-btn" href="https://wa.me/6285853204842?text=Halo%20Admin%2C%20saya%20butuh%20bantuan%20mengenai%20Generator%20Email%20and%20AM" target="_blank">
+        <i class="fab fa-whatsapp"></i> Hubungi Owner / Admin
+      </a>
+      <p>© 2026 Generator Email and Prem AM · project</p>
+    </footer>
+
+  </div>
+
+  <!-- CYBER MODAL ALERT -->
+  <div class="cyber-modal-overlay" id="cyberModal">
+    <div class="cyber-modal">
+      <div class="cyber-modal-icon" id="modalIcon"><i class="fa-solid fa-circle-info"></i></div>
+      <div class="cyber-modal-title" id="modalTitle">NOTIFIKASI</div>
+      <div class="cyber-modal-body" id="modalBody">Pesan sistem akan ditayangkan di sini.</div>
+      <button class="cyber-btn" id="modalCloseBtn" style="width:100%;">OK, MENGERTI</button>
+    </div>
+  </div>
+
+  <script type="module">
+    /* ================= FIREBASE INIT ================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import {
+  getDatabase, ref, get, set, update
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCBpVowz0Y8pXWRaRLMHyaSdmvYzLHo01k",
+  authDomain: "projectam-c5e43.firebaseapp.com",
+  databaseURL: "https://projectam-c5e43-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "projectam-c5e43",
+  storageBucket: "projectam-c5e43.firebasestorage.app",
+  messagingSenderId: "242377441201",
+  appId: "1:242377441201:web:b9c0eba407951b7d788790",
+  measurementId: "G-9MDB4V4CVH"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getDatabase(fbApp);
+
+const ADMIN_USERNAME = "agung";
+const ADMIN_PASSWORD = "agungganteng";
+const SESSION_KEY = "gea_session_v1";
+
+/* ================= CYBER MODAL ALERT SYSTEM ================= */
+const cyberModal = document.getElementById("cyberModal");
+const modalIcon = document.getElementById("modalIcon");
+const modalTitle = document.getElementById("modalTitle");
+const modalBody = document.getElementById("modalBody");
+const modalCloseBtn = document.getElementById("modalCloseBtn");
+
+function showCyberAlert(message, title = "SISTEM NOTIFIKASI", type = "info") {
+  modalTitle.textContent = title;
+  modalBody.innerHTML = message;
+  if (type === "success") {
+    modalIcon.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--green); text-shadow:0 0 15px var(--green)"></i>`;
+  } else if (type === "error") {
+    modalIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--red); text-shadow:0 0 15px var(--red)"></i>`;
+  } else {
+    modalIcon.innerHTML = `<i class="fa-solid fa-circle-info" style="color:var(--cyan); text-shadow:0 0 15px var(--cyan)"></i>`;
+  }
+  cyberModal.classList.add("active");
+}
+modalCloseBtn.addEventListener("click", () => cyberModal.classList.remove("active"));
+
+function showInlineAlert(el, msg, type = "error") {
+  el.textContent = msg;
+  el.className = `alert-box show ${type}`;
+}
+function hideInlineAlert(el) {
+  el.className = "alert-box";
+}
+
+/* Helper Timeout Promise */
+function withTimeout(promise, ms = 8000) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout: Periksa koneksi atau Rules Firebase.")), ms))
+  ]);
+}
+
+/* ================= TAB SYSTEM ================= */
+document.querySelectorAll('#userApp .tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#userApp .tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('#userApp .tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    btn.classList.add('active');
+  });
+});
+
+/* ================= DURATION HELPERS ================= */
+function durationToMs(value, unit) {
+  const v = Number(value) || 0;
+  if (unit === "minutes") return v * 60 * 1000;
+  if (unit === "hours") return v * 60 * 60 * 1000;
+  return v * 24 * 60 * 60 * 1000;
+}
+
+function formatRemaining(ms) {
+  if (ms <= 0) return "Kadaluarsa";
+  const mins = Math.floor(ms / 60000);
+  const days = Math.floor(mins / 1440);
+  const hours = Math.floor((mins % 1440) / 60);
+  const minutes = mins % 60;
+  let parts = [];
+  if (days > 0) parts.push(`${days}h`);
+  if (hours > 0) parts.push(`${hours}j`);
+  if (days === 0 && minutes > 0) parts.push(`${minutes}m`);
+  return parts.length ? parts.join(" ") : "< 1m";
+}
+
+function statusBadgeFor(data) {
+  if (!data || data.role === "admin") return { text: "ADMIN / PERMANENT", cls: "badge-info" };
+  if (data.type === "permanent") return { text: "PERMANENT", cls: "badge-success" };
+  if (data.type === "time") {
+    const remaining = (data.expiresAt || 0) - Date.now();
+    if (remaining <= 0) return { text: "WAKTU HABIS", cls: "badge-danger" };
+    return { text: `SISA WAKTU: ${formatRemaining(remaining)}`, cls: remaining < 3600000 ? "badge-warning" : "badge-success" };
+  }
+  if (data.type === "limit") {
+    const remaining = Number(data.limit || 0);
+    if (remaining <= 0) return { text: "LIMIT HABIS", cls: "badge-danger" };
+    return { text: `SISA LIMIT: ${remaining}`, cls: remaining <= 1 ? "badge-warning" : "badge-success" };
+  }
+  return { text: "TIDAK VALID", cls: "badge-danger" };
+}
+
+/* ================= AUTH / SESSION ================= */
+const loginScreen = document.getElementById("loginScreen");
+const loginUsername = document.getElementById("loginUsername");
+const loginPassword = document.getElementById("loginPassword");
+const loginBtn = document.getElementById("loginBtn");
+const loginAlert = document.getElementById("loginAlert");
+
+const statusBar = document.getElementById("statusBar");
+const statusWho = document.getElementById("statusWho");
+const statusRole = document.getElementById("statusRole");
+const statusBadge = document.getElementById("statusBadge");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const userApp = document.getElementById("userApp");
+const adminApp = document.getElementById("adminApp");
+
+function saveSession(username, role) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ username, role }));
+}
+function loadSession() {
+  try { return JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); }
+  catch (e) { return null; }
+}
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+}
+
+async function fetchUserData(username) {
+  const snap = await withTimeout(get(ref(db, `users/${username}`)));
+  return snap.exists() ? snap.val() : null;
+}
+
+async function attemptLogin(username, password) {
+  if (!username || !password) {
+    return { ok: false, message: "Username dan password wajib diisi." };
+  }
+
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    return { ok: true, role: "admin", username, data: { role: "admin" } };
+  }
+
+  const data = await fetchUserData(username);
+  if (!data) return { ok: false, message: "Username tidak ditemukan. Hubungi Admin." };
+  if (data.password !== password) return { ok: false, message: "Password salah." };
+
+  if (data.role === "admin") {
+    return { ok: true, role: "admin", username, data };
+  }
+
+  if (data.type === "permanent") {
+    return { ok: true, role: "user", username, data };
+  }
+
+  if (data.type === "limit") {
+    const remaining = Number(data.limit || 0);
+    if (remaining <= 0) {
+      return { ok: false, message: "Limit akun sudah habis. Hubungi Admin untuk menambah limit." };
+    }
+    // Limit HANYA dicek saat login, TIDAK dipotong di sini
+    return { ok: true, role: "user", username, data };
+  }
+
+  if (data.type === "time") {
+    const now = Date.now();
+    if (!data.expiresAt || now > data.expiresAt) {
+      await withTimeout(update(ref(db, `users/${username}`), { type: "limit", limit: 0, expiresAt: null }));
+      return { ok: false, message: "Waktu akses akun sudah habis. Hubungi Admin." };
+    }
+    return { ok: true, role: "user", username, data };
+  }
+
+  return { ok: false, message: "Status akun tidak valid. Hubungi Admin." };
+}
+
+function enterApp(username, role, data) {
+  loginScreen.style.display = "none";
+  statusBar.style.display = "flex";
+  statusWho.textContent = username;
+  statusRole.textContent = role.toUpperCase();
+  statusRole.className = `badge ${role === 'admin' ? 'badge-info' : 'badge-info'}`;
+  const st = statusBadgeFor(role === 'admin' ? { role: 'admin' } : data);
+  statusBadge.textContent = st.text;
+  statusBadge.className = `badge ${st.cls}`;
+
+  if (role === "admin") {
+    adminApp.style.display = "block";
+    userApp.style.display = "none";
+    refreshUsersTable();
+  } else {
+    userApp.style.display = "block";
+    adminApp.style.display = "none";
+    initTempMail();
+    renderEmailHistory();
+  }
+}
+
+function backToLogin(message) {
+  clearSession();
+  statusBar.style.display = "none";
+  userApp.style.display = "none";
+  adminApp.style.display = "none";
+  loginScreen.style.display = "flex";
+  loginPassword.value = "";
+  if (message) showInlineAlert(loginAlert, message, "error");
+  else hideInlineAlert(loginAlert);
+}
+
+loginBtn.addEventListener("click", async () => {
+  hideInlineAlert(loginAlert);
+  const username = loginUsername.value.trim();
+  const password = loginPassword.value;
+
+  loginBtn.disabled = true;
+  loginBtn.innerHTML = `<div class="loader"></div> MEMPROSES...`;
+
+  try {
+    const result = await attemptLogin(username, password);
+    if (!result.ok) {
+      showInlineAlert(loginAlert, result.message, "error");
+      return;
+    }
+    saveSession(result.username, result.role);
+    enterApp(result.username, result.role, result.data);
+  } catch (e) {
+    showInlineAlert(loginAlert, "Gagal terhubung ke database. Pastikan Rules Firebase sudah di-SETEL ke True.", "error");
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> MASUK`;
+  }
+});
+
+loginPassword.addEventListener("keydown", (e) => { if (e.key === "Enter") loginBtn.click(); });
+logoutBtn.addEventListener("click", () => backToLogin());
+
+async function restoreSession() {
+  const session = loadSession();
+  if (!session) return;
+
+  if (session.role === "admin" && session.username === ADMIN_USERNAME) {
+    enterApp(session.username, "admin", { role: "admin" });
+    return;
+  }
+
+  try {
+    const data = await fetchUserData(session.username);
+    if (!data) return backToLogin("Sesi tidak valid. Silakan login kembali.");
+
+    if (data.role === "admin") {
+      enterApp(session.username, "admin", data);
+      return;
+    }
+
+    if (data.type === "permanent") {
+      enterApp(session.username, "user", data);
+      return;
+    }
+    if (data.type === "limit") {
+      if (Number(data.limit || 0) <= 0) return backToLogin("Limit akun sudah habis. Hubungi Admin.");
+      enterApp(session.username, "user", data);
+      return;
+    }
+    if (data.type === "time") {
+      if (!data.expiresAt || Date.now() > data.expiresAt) {
+        await withTimeout(update(ref(db, `users/${session.username}`), { type: "limit", limit: 0, expiresAt: null }));
+        return backToLogin("Waktu akses akun sudah habis. Hubungi Admin.");
+      }
+      enterApp(session.username, "user", data);
+      return;
+    }
+    backToLogin("Status akun tidak valid. Hubungi Admin.");
+  } catch (e) {
+    backToLogin();
+  }
+}
+
+/* ================= ADMIN: DYNAMIC FIELD TOGGLES ================= */
+const newRole = document.getElementById("newRole");
+const newTypeWrap = document.getElementById("newTypeWrap");
+const newType = document.getElementById("newType");
+const newLimitWrap = document.getElementById("newLimitWrap");
+const newTimeWrap = document.getElementById("newTimeWrap");
+
+function refreshNewTypeFields() {
+  const isAdmin = newRole.value === "admin";
+  newTypeWrap.style.display = isAdmin ? "none" : "block";
+  newLimitWrap.classList.remove("show");
+  newTimeWrap.classList.remove("show");
+  if (!isAdmin) {
+    if (newType.value === "limit") newLimitWrap.classList.add("show");
+    if (newType.value === "time") newTimeWrap.classList.add("show");
+  }
+}
+newRole.addEventListener("change", refreshNewTypeFields);
+newType.addEventListener("change", refreshNewTypeFields);
+refreshNewTypeFields();
+
+const updAction = document.getElementById("updAction");
+const updLimitWrap = document.getElementById("updLimitWrap");
+const updTimeWrap = document.getElementById("updTimeWrap");
+function refreshUpdFields() {
+  updLimitWrap.classList.remove("show");
+  updTimeWrap.classList.remove("show");
+  if (updAction.value === "add_limit") updLimitWrap.classList.add("show");
+  if (updAction.value === "add_time") updTimeWrap.classList.add("show");
+}
+updAction.addEventListener("change", refreshUpdFields);
+refreshUpdFields();
+
+/* ================= ADMIN: CREATE ACCOUNT ================= */
+const createAlert = document.getElementById("createAlert");
+document.getElementById("createAccountBtn").addEventListener("click", async () => {
+  hideInlineAlert(createAlert);
+  const username = document.getElementById("newUsername").value.trim();
+  const password = document.getElementById("newPassword").value.trim();
+  const role = newRole.value;
+  const type = newType.value;
+
+  if (!username || !password) {
+    return showInlineAlert(createAlert, "Username dan password wajib diisi.", "error");
+  }
+  if (username === ADMIN_USERNAME) {
+    return showInlineAlert(createAlert, "Username ini sudah dipakai untuk admin utama.", "error");
+  }
+
+  const btn = document.getElementById("createAccountBtn");
+  btn.disabled = true;
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = `<div class="loader"></div> MENYIMPAN...`;
+
+  try {
+    const existing = await fetchUserData(username);
+    if (existing) {
+      showInlineAlert(createAlert, "Username sudah terdaftar. Gunakan username lain.", "error");
+      return;
+    }
+
+    const payload = { password, role, createdAt: Date.now() };
+
+    if (role === "admin") {
+      payload.type = "permanent";
+    } else if (type === "limit") {
+      const limitValue = Number(document.getElementById("newLimitValue").value);
+      if (!limitValue || limitValue < 1) {
+        showInlineAlert(createAlert, "Masukkan jumlah limit yang valid.", "error");
+        return;
+      }
+      payload.type = "limit";
+      payload.limit = limitValue;
+    } else if (type === "time") {
+      const timeValue = Number(document.getElementById("newTimeValue").value);
+      const timeUnit = document.getElementById("newTimeUnit").value;
+      if (!timeValue || timeValue < 1) {
+        showInlineAlert(createAlert, "Masukkan durasi waktu yang valid.", "error");
+        return;
+      }
+      payload.type = "time";
+      payload.expiresAt = Date.now() + durationToMs(timeValue, timeUnit);
+    } else {
+      payload.type = "permanent";
+    }
+
+    await withTimeout(set(ref(db, `users/${username}`), payload));
+    showInlineAlert(createAlert, `Akun "${username}" berhasil disimpan ke Firebase!`, "success");
+    document.getElementById("newUsername").value = "";
+    document.getElementById("newPassword").value = "";
+    document.getElementById("newLimitValue").value = "";
+    document.getElementById("newTimeValue").value = "";
+    refreshUsersTable();
+  } catch (e) {
+    showInlineAlert(createAlert, "Gagal menyimpan: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
+  }
+});
+
+/* ================= ADMIN: UPDATE ACCOUNT ================= */
+const updateAlert = document.getElementById("updateAlert");
+document.getElementById("updateAccountBtn").addEventListener("click", async () => {
+  hideInlineAlert(updateAlert);
+  const username = document.getElementById("updUsername").value.trim();
+  const action = updAction.value;
+
+  if (!username) return showInlineAlert(updateAlert, "Masukkan username tujuan.", "error");
+  if (username === ADMIN_USERNAME) return showInlineAlert(updateAlert, "Akun admin utama tidak dapat diubah dari sini.", "error");
+
+  const btn = document.getElementById("updateAccountBtn");
+  btn.disabled = true;
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = `<div class="loader"></div> MEMPROSES...`;
+
+  try {
+    const data = await fetchUserData(username);
+    if (!data) {
+      showInlineAlert(updateAlert, "Username tidak ditemukan.", "error");
+      return;
+    }
+
+    if (action === "add_limit") {
+      const value = Number(document.getElementById("updLimitValue").value);
+      if (!value || value < 1) {
+        showInlineAlert(updateAlert, "Masukkan jumlah limit yang valid.", "error");
+        return;
+      }
+      const current = data.type === "limit" ? Number(data.limit || 0) : 0;
+      await withTimeout(update(ref(db, `users/${username}`), { type: "limit", limit: current + value, expiresAt: null }));
+      showInlineAlert(updateAlert, `Limit "${username}" berhasil ditambah.`, "success");
+    } else if (action === "add_time") {
+      const value = Number(document.getElementById("updTimeValue").value);
+      const unit = document.getElementById("updTimeUnit").value;
+      if (!value || value < 1) {
+        showInlineAlert(updateAlert, "Masukkan durasi waktu yang valid.", "error");
+        return;
+      }
+      const base = (data.type === "time" && data.expiresAt && data.expiresAt > Date.now()) ? data.expiresAt : Date.now();
+      await withTimeout(update(ref(db, `users/${username}`), { type: "time", expiresAt: base + durationToMs(value, unit), limit: null }));
+      showInlineAlert(updateAlert, `Waktu "${username}" berhasil ditambah.`, "success");
+    } else if (action === "make_permanent") {
+      await withTimeout(update(ref(db, `users/${username}`), { type: "permanent", limit: null, expiresAt: null }));
+      showInlineAlert(updateAlert, `Akun "${username}" sekarang PERMANENT.`, "success");
+    }
+
+    document.getElementById("updUsername").value = "";
+    document.getElementById("updLimitValue").value = "";
+    document.getElementById("updTimeValue").value = "";
+    refreshUsersTable();
+  } catch (e) {
+    showInlineAlert(updateAlert, "Gagal memperbarui data: " + e.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
+  }
+});
+
+/* ================= ADMIN: SHOW ALL USERS ================= */
+const usersTableBody = document.getElementById("usersTableBody");
+
+async function refreshUsersTable() {
+  usersTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-dim);">Memuat data...</td></tr>`;
+  try {
+    const snap = await withTimeout(get(ref(db, "users")));
+    if (!snap.exists()) {
+      usersTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-dim);">Belum ada akun dibuat.</td></tr>`;
+      return;
+    }
+    const val = snap.val();
+    const rows = Object.entries(val).map(([username, data]) => {
+      const st = statusBadgeFor(data);
+      return `
+        <tr>
+          <td>${username}</td>
+          <td>${data.password ?? "-"}</td>
+          <td>${(data.role || "user").toUpperCase()}</td>
+          <td><span class="badge ${st.cls}">${st.text}</span></td>
+        </tr>
+      `;
+    }).join("");
+    usersTableBody.innerHTML = rows;
+  } catch (e) {
+    usersTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--red);">Gagal memuat data dari Firebase. Cek Rules Firebase.</td></tr>`;
+  }
+}
+
+document.getElementById("refreshUsersBtn").addEventListener("click", refreshUsersTable);
+
+/* ================= TAB 1: TEMP MAIL LOGIC ================= */
+const GUERRILLA_API = "https://api.guerrillamail.com/ajax.php";
+let mailState = { sid_token: "", address: "", messages: [], timer: null };
+
+const emailDisplay = document.getElementById("emailDisplay");
+const inboxList = document.getElementById("inboxList");
+const mailViewer = document.getElementById("mailViewer");
+const mailCount = document.getElementById("mailCount");
+const manualEmailInput = document.getElementById("manualEmailInput");
+const historyContainer = document.getElementById("historyContainer");
+
+function saveEmailHistory(email) {
+  if (!email || email.includes("...")) return;
+  let history = JSON.parse(localStorage.getItem("email_history") || "[]");
+  if (!history.includes(email)) {
+    history.unshift(email);
+    if (history.length > 5) history.pop();
+    localStorage.setItem("email_history", JSON.stringify(history));
+  }
+  renderEmailHistory();
+}
+
+function renderEmailHistory() {
+  let history = JSON.parse(localStorage.getItem("email_history") || "[]");
+  if (history.length === 0) {
+    historyContainer.innerHTML = `<span style="font-size:12px; color:var(--text-dim);">Belum ada riwayat email.</span>`;
+    return;
+  }
+  historyContainer.innerHTML = history.map(email => `
+    <div class="history-chip" data-email="${email}">
+      <i class="fa-solid fa-envelope"></i> ${email}
+    </div>
+  `).join("");
+  historyContainer.querySelectorAll(".history-chip").forEach(chip => {
+    chip.addEventListener("click", () => loadHistoryEmail(chip.dataset.email));
+  });
+}
+
+async function initTempMail() {
+  try {
+    const res = await fetch(`${GUERRILLA_API}?f=get_email_address`);
+    const data = await res.json();
+    mailState.sid_token = data.sid_token;
+    mailState.address = data.email_addr;
+    emailDisplay.value = mailState.address;
+
+    saveEmailHistory(mailState.address);
+    fetchInbox();
+    if (mailState.timer) clearInterval(mailState.timer);
+    mailState.timer = setInterval(fetchInbox, 4000);
+  } catch (err) {
+    emailDisplay.value = "Gagal memuat email";
+  }
+}
+
+async function setManualEmail(username) {
+  if (!username) return showCyberAlert("Masukkan username/email manual terlebih dahulu!", "PERINGATAN", "error");
+
+  const cleanUser = username.split('@')[0];
+
+  emailDisplay.value = "MEMUAT AKUN...";
+  try {
+    const res = await fetch(`${GUERRILLA_API}?f=set_email_user&email_user=${encodeURIComponent(cleanUser)}&sid_token=${mailState.sid_token}`);
+    const data = await res.json();
+    mailState.address = data.email_addr;
+    emailDisplay.value = mailState.address;
+
+    saveEmailHistory(mailState.address);
+    fetchInbox();
+    showCyberAlert(`Email berhasil dialihkan ke <b>${mailState.address}</b>`, "BERHASIL", "success");
+  } catch (e) {
+    showCyberAlert("Gagal memuat akun email manual.", "ERROR", "error");
+  }
+}
+
+function loadHistoryEmail(email) {
+  const cleanUser = email.split('@')[0];
+  setManualEmail(cleanUser);
+}
+
+async function fetchInbox() {
+  if (!mailState.sid_token) return;
+  try {
+    const res = await fetch(`${GUERRILLA_API}?f=get_email_list&sid_token=${mailState.sid_token}&offset=0`);
+    const data = await res.json();
+    mailState.messages = data.list || [];
+    renderInbox();
+  } catch (err) { console.error(err); }
+}
+
+function renderInbox() {
+  mailCount.textContent = mailState.messages.length;
+  if (mailState.messages.length === 0) {
+    inboxList.innerHTML = `<li class="mail-item" style="text-align:center; color:var(--text-dim); padding:20px;">Menunggu email masuk...</li>`;
+    return;
+  }
+  inboxList.innerHTML = mailState.messages.map(m => `
+    <li class="mail-item" data-mail-id="${m.mail_id}">
+      <div style="font-weight:700; color:#fff; font-size:13px;">${m.mail_from}</div>
+      <div style="color:var(--text-dim); font-size:12px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${m.mail_subject}</div>
+    </li>
+  `).join("");
+  inboxList.querySelectorAll(".mail-item[data-mail-id]").forEach(li => {
+    li.addEventListener("click", () => readMail(li.dataset.mailId));
+  });
+}
+
+async function readMail(id) {
+  mailViewer.innerHTML = `<p style="color:var(--text-dim);">Memuat isi email...</p>`;
+  try {
+    const res = await fetch(`${GUERRILLA_API}?f=fetch_email&sid_token=${mailState.sid_token}&email_id=${id}`);
+    const data = await res.json();
+    mailViewer.innerHTML = `
+      <h4 style="color:#fff; margin-bottom:8px;">${data.mail_subject}</h4>
+      <p style="font-size:12px; color:var(--cyan); margin-bottom:12px;">Dari: ${data.mail_from}</p>
+      <div style="font-size:13px; color:var(--text); line-height:1.6;">${data.mail_body}</div>
+    `;
+  } catch (e) {
+    mailViewer.innerHTML = `<p style="color:var(--red);">Gagal membaca email.</p>`;
+  }
+}
+
+document.getElementById("copyEmailBtn").addEventListener("click", () => {
+  navigator.clipboard.writeText(emailDisplay.value);
+  showCyberAlert("Alamat Email telah berhasil disalin ke clipboard!", "TERCYBER SALIN", "success");
+});
+
+document.getElementById("newEmailBtn").addEventListener("click", () => {
+  emailDisplay.value = "MEMBUAT EMAIL...";
+  initTempMail();
+});
+
+document.getElementById("loadManualEmailBtn").addEventListener("click", () => {
+  const val = manualEmailInput.value.trim();
+  setManualEmail(val);
+});
+
+/* ================= TAB 2: AM PREM LOGIC ================= */
+const AM_API_BASE = "https://restapidhan.vercel.app";
+const AM_API_KEY = "dravndesamuel";
+
+const amAlert = document.getElementById("amAlert");
+const amEmailInput = document.getElementById("amEmailInput");
+const amMagicInput = document.getElementById("amMagicInput");
+const amSendBtn = document.getElementById("amSendBtn");
+const amActivateBtn = document.getElementById("amActivateBtn");
+
+amSendBtn.addEventListener("click", async () => {
+  const email = amEmailInput.value.trim();
+  if (!email || !email.includes("@")) return showCyberAlert("Masukkan alamat email Alight Motion yang valid!", "INPUT TDAK VALID", "error");
+
+  amSendBtn.disabled = true;
+  amSendBtn.innerHTML = `<div class="loader"></div>`;
+
+  try {
+    const res = await fetch(`${AM_API_BASE}/api/am?action=send&apikey=${AM_API_KEY}&email=${encodeURIComponent(email)}`);
+    const data = await res.json();
+    if (data.status) {
+      showCyberAlert("Magic Link berhasil dikirim! Silakan periksa inbox/spam email Anda.", "PENGIRIMAN BERHASIL", "success");
+    } else {
+      showCyberAlert(data.message || "Gagal mengirim Magic Link.", "GAGAL", "error");
+    }
+  } catch (e) {
+    showCyberAlert("Terjadi kesalahan koneksi jaringan.", "KONEKSI EROR", "error");
+  } finally {
+    amSendBtn.disabled = false;
+    amSendBtn.textContent = "KIRIM";
+  }
+});
+
+amActivateBtn.addEventListener("click", async () => {
+  const email = amEmailInput.value.trim();
+  const magic = amMagicInput.value.trim();
+
+  if (!email || !magic) return showCyberAlert("Lengkapi Email dan Magic Link terlebih dahulu!", "FORM INKOMPLET", "error");
+
+  const session = loadSession();
+  if (!session) return showCyberAlert("Sesi login tidak ditemukan. Silakan login ulang.", "ERROR", "error");
+
+  amActivateBtn.disabled = true;
+  amActivateBtn.innerHTML = `<div class="loader"></div> MENGHUBUNGKAN...`;
+
+  try {
+    // 1. Ambil data user dari Firebase & cek sisa limit
+    const userData = await fetchUserData(session.username);
+
+    if (userData && userData.type === "limit") {
+      const currentLimit = Number(userData.limit || 0);
+      if (currentLimit <= 0) {
+        showCyberAlert("Limit kamu sudah habis! Silakan hubungi admin untuk isi ulang.", "LIMIT HABIS", "error");
+        amActivateBtn.disabled = false;
+        amActivateBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> VERIFIKASI & AKTIFKAN`;
+        return;
+      }
+    }
+
+    // 2. Tembak API Verifikasi Alight Motion
+    const res = await fetch(`${AM_API_BASE}/api/am?action=verif&apikey=${AM_API_KEY}&email=${encodeURIComponent(email)}&url=${encodeURIComponent(magic)}`);
+    const data = await res.json();
+
+    if (data.status) {
+      // 3. Jika berhasil & tipe akun 'limit', kurangi 1 limit di Firebase
+      if (userData && userData.type === "limit") {
+        const newLimit = Math.max(0, Number(userData.limit || 0) - 1);
+        await update(ref(db, `users/${session.username}`), { limit: newLimit });
+
+        // Update tampilan status badge secara instant
+        statusBadge.textContent = `SISA LIMIT: ${newLimit}`;
+        if (newLimit <= 1) statusBadge.className = "badge badge-warning";
+        if (newLimit === 0) statusBadge.className = "badge badge-danger";
+      }
+
+      showCyberAlert("Aktivasi Alight Motion Premium BERHASIL dilakukan!", "SELAMAT", "success");
+      amMagicInput.value = ""; 
+    } else {
+      showCyberAlert(data.message || "Gagal verifikasi Magic Link.", "VERIFIKASI GAGAL", "error");
+    }
+  } catch (e) {
+    showCyberAlert("Koneksi verifikasi gagal atau terjadi masalah database.", "ERROR", "error");
+  } finally {
+    amActivateBtn.disabled = false;
+    amActivateBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> VERIFIKASI & AKTIFKAN`;
+  }
+});
+
+/* ================= BOOTSTRAP ================= */
+restoreSession();
+  </script>
+</body>
+</html>
